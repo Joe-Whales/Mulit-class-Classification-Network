@@ -1,45 +1,31 @@
 @echo off
-setlocal enabledelayedexpansion
 
-:: Set environment variables
-set CONDA_ENV_NAME=ai_assignment
-set PYTHON_VERSION=3.11
-set REQUIREMENTS_FILE=requirements.txt
+:: Define the environment name
+set ENV_NAME=fruit_classification
 
-:: Create Miniconda environment
-call conda create -n %CONDA_ENV_NAME% python=%PYTHON_VERSION% -y
+:: Check if Miniconda is installed
+where conda >nul 2>nul
 if %errorlevel% neq 0 (
-    echo Failed to create Conda environment.
-    exit /b %errorlevel%
+    echo Miniconda is not installed. Please install Miniconda and try again.
+    exit /b 1
 )
+
+:: Create a new Miniconda environment
+echo Creating new Miniconda environment: %ENV_NAME%
+call conda create -n %ENV_NAME% python=3.8 -y
 
 :: Activate the environment
-call conda activate %CONDA_ENV_NAME%
-if %errorlevel% neq 0 (
-    echo Failed to activate Conda environment.
-    exit /b %errorlevel%
-)
+echo Activating environment: %ENV_NAME%
+call conda activate %ENV_NAME%
 
-:: Create requirements.txt file
-echo numpy==1.24.3 > %REQUIREMENTS_FILE%
-echo pandas==2.0.1 >> %REQUIREMENTS_FILE%
-echo scikit-learn==1.2.2 >> %REQUIREMENTS_FILE%
-echo matplotlib==3.7.1 >> %REQUIREMENTS_FILE%
-echo jupyter==1.0.0 >> %REQUIREMENTS_FILE%
+:: Install dependencies
+echo Installing dependencies
+call conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch -y
+call pip install numpy matplotlib scikit-learn seaborn tqdm pyyaml
 
-:: Install PyTorch with CUDA support
-call pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-if %errorlevel% neq 0 (
-    echo Failed to install PyTorch.
-    exit /b %errorlevel%
-)
+:: Verify installation
+echo Verifying installation
+python -c "import torch; import torchvision; import numpy; import matplotlib; import sklearn; import seaborn; import tqdm; import yaml; print('All packages imported successfully')"
 
-:: Install other requirements
-call pip install -r %REQUIREMENTS_FILE%
-if %errorlevel% neq 0 (
-    echo Failed to install requirements.
-    exit /b %errorlevel%
-)
-
-echo Environment setup complete.
-echo To activate the environment, use: conda activate %CONDA_ENV_NAME%
+echo Setup complete. You can now activate the environment with: conda activate %ENV_NAME%
+pause
