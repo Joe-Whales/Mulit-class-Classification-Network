@@ -1,16 +1,4 @@
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torchvision import models
-
-class LogisticRegression(nn.Module):
-    def __init__(self, input_dim, num_classes):
-        super(LogisticRegression, self).__init__()
-        self.linear = nn.Linear(input_dim, num_classes)
-
-    def forward(self, x):
-        x = x.view(x.size(0), -1)  # Flatten the input
-        return self.linear(x)
 
 class SimpleCNN(nn.Module):
     def __init__(self, num_classes):
@@ -36,23 +24,50 @@ class SimpleCNN(nn.Module):
         x = self.features(x)
         x = self.classifier(x)
         return x
+    
+    
 
-class ResNet50(nn.Module):
-    def __init__(self, num_classes, pretrained=True):
-        super(ResNet50, self).__init__()
-        self.resnet = models.resnet50(pretrained=pretrained)
-        num_ftrs = self.resnet.fc.in_features
-        self.resnet.fc = nn.Linear(num_ftrs, num_classes)
+class AdvancedCNN(nn.Module):
+    def __init__(self, num_classes, dropout_rate=0.3):
+        super(AdvancedCNN, self).__init__()
+        self.features = nn.Sequential(
+            self._conv_block(3, 32, dropout_rate),
+            self._conv_block(32, 64, dropout_rate),
+            self._conv_block(64, 128, dropout_rate),
+            self._conv_block(128, 256, dropout_rate)
+        )
+        self.classifier = nn.Sequential(
+            nn.AdaptiveAvgPool2d((1, 1)),
+            nn.Flatten(),
+            nn.Linear(256, 512),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm1d(512),
+            nn.Dropout(dropout_rate),
+            nn.Linear(512, num_classes)
+        )
+
+    def _conv_block(self, in_channels, out_channels, dropout_rate):
+        return nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(out_channels),
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(out_channels),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout2d(dropout_rate)
+        )
 
     def forward(self, x):
-        return self.resnet(x)
+        x = self.features(x)
+        x = self.classifier(x)
+        return x
 
-def get_model(model_name, num_classes, input_dim=224*224*3):
-    if model_name == 'logistic':
-        return LogisticRegression(input_dim, num_classes)
-    elif model_name == 'simple_cnn':
+# Update the get_model function
+def get_model(model_name, num_classes, **kwargs):
+    if model_name == 'simple_cnn':
         return SimpleCNN(num_classes)
-    elif model_name == 'resnet50':
-        return ResNet50(num_classes)
+    elif model_name == 'advanced_cnn':
+        return AdvancedCNN(num_classes, **kwargs)
     else:
         raise ValueError(f"Unknown model name: {model_name}")

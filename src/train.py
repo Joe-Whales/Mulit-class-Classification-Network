@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
-from .utils import get_device, calculate_metrics
+from .utils import calculate_metrics, log_metrics
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 
 def train_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -54,9 +55,16 @@ def validate(model, loader, criterion, device):
     
     return metrics
 
-def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device, evaluate_every = 5, scheduler=None):
+def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device, config, evaluate_every = 5, scheduler=None):
     best_val_loss = float('inf')
     best_model = None
+    
+    if config['training'].get('scheduler'):
+        scheduler_config = config['training']['scheduler']
+        if scheduler_config['name'] == 'cosine_annealing_warm_restarts':
+            scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=scheduler_config['T_0'], T_mult=scheduler_config['T_mult'])
+    else:
+        scheduler = None    
     
     for epoch in range(num_epochs):
         print(f"Epoch {epoch+1}/{num_epochs}")
@@ -72,9 +80,13 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
             if val_metrics['loss'] < best_val_loss:
                 best_val_loss = val_metrics['loss']
                 best_model = model.state_dict().copy()
+            log_metrics(config['paths']['metrics'], epoch+1, train_metrics['loss'], train_metrics['f1'], val_metrics['loss'], val_metrics['f1'])
+        
+        else:
+            log_metrics(config['paths']['metrics'], epoch+1, train_metrics['loss'], train_metrics['f1'], None, None)
         
         if scheduler:
-            scheduler.step(train_metrics['loss'])
+            scheduler.step()
     
     return best_model
 

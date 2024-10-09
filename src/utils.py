@@ -2,6 +2,8 @@ import torch
 import random
 import numpy as np
 from sklearn.metrics import precision_recall_fscore_support
+import csv
+import os
 
 def set_seed(seed):
     torch.manual_seed(seed)
@@ -21,3 +23,19 @@ def calculate_metrics(y_true, y_pred):
         'recall': recall,
         'f1': f1
     }
+
+def log_metrics(filename, epoch, train_loss, train_acc, val_loss, val_acc):
+    fieldnames = ['epoch', 'train_loss', 'train_acc', 'val_loss', 'val_acc']
+    is_new_file = not os.path.exists(filename)
+    
+    with open(filename, mode='a', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        if is_new_file:
+            writer.writeheader()
+        writer.writerow({
+            'epoch': epoch,
+            'train_loss': train_loss,
+            'train_acc': train_acc,
+            'val_loss': val_loss,
+            'val_acc': val_acc
+        })

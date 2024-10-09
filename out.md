@@ -1,14 +1,3 @@
-Traceback (most recent call last):
-  File "c:\Users\joewh\OneDrive\Desktop\Mulit-class-Classification-Network\test.py", line 196, in <module>
-    main()
-  File "c:\Users\joewh\OneDrive\Desktop\Mulit-class-Classification-Network\test.py", line 152, in main
-    train_dataset = FruitDataset(root_dir=os.path.join(root_dir, 'train'), transform=SimpleTransform())
-                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "c:\Users\joewh\OneDrive\Desktop\Mulit-class-Classification-Network\test.py", line 21, in __init__
-    self.classes = os.listdir(root_dir)
-                   ^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [WinError 3] The system cannot find the path specified: 'archive (6)/MY_data\\train'
-(ai_assignment) PS C:\Users\joewh\OneDrive\Desktop\Mulit-class-Classification-Network> python -u "c:\Users\joewh\OneDrive\Desktop\Mulit-class-Classification-Network\test.py"  
 Epoch 1/50
 Train Loss: 2.0935, Train Acc: 20.34%
 Test Loss: 1.8150, Test Acc: 29.66%

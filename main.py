@@ -7,10 +7,15 @@ from src.models import get_model
 from src.train import train_model, get_optimizer
 from src.evaluate import evaluate_model, plot_confusion_matrix, plot_learning_curves
 from src.utils import set_seed, get_device
+import argparse
 
 def main():
+    parser = argparse.ArgumentParser(description='Run fruit classification model')
+    parser.add_argument('--config', type=str, default='config_simple.yaml', help='Path to the config file')
+    args = parser.parse_args()
+
     # Load configuration
-    with open('config.yaml', 'r') as f:
+    with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
 
     # Set seed for reproducibility
@@ -21,6 +26,7 @@ def main():
 
     # Create data loaders
     train_loader, val_loader, test_loader, classes = create_data_loaders(
+        config,
         config['data']['root_dir'],
         config['data']['batch_size'],
         config['data']['num_workers']
@@ -33,13 +39,9 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = get_optimizer(model, config['training']['optimizer'], config['training']['learning_rate'])
 
-    # Define scheduler
-    scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=config['training']['scheduler']['patience'], 
-                                  factor=config['training']['scheduler']['factor'])
-
     # Train the model
     best_model = train_model(model, train_loader, val_loader, criterion, optimizer, 
-                             config['training']['num_epochs'], device,  config['training']['evaluate_every'], scheduler)
+                             config['training']['num_epochs'], device, config, config['training']['evaluate_every'])
 
     # Save the best model
     torch.save(best_model, config['paths']['best_model'])

@@ -1,0 +1,23 @@
+data:
+  root_dir: 'data'
+  batch_size: 32
+  num_workers: 4
+
+model:
+  name: 'simple_cnn'
+  num_classes: 10
+
+training:
+  num_epochs: 50
+  learning_rate: 0.001
+  optimizer: 'adam'
+  evaluate_every: 5
+
+seed: 42
+
+paths:
+  best_model: 'results/simple_cnn_best_model.pth'
+  confusion_matrix: 'results/simple_cnn_confusion_matrix.png'
+  learning_curves: 'results/simple_cnn_learning_curves.png'
+  log_dir: 'logs/simple_cnn'
+  metrics: 'results/simple_cnn_metrics.json'
