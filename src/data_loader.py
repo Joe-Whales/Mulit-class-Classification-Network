@@ -64,11 +64,15 @@ def get_transforms(config, train=True):
 
 def create_data_loaders(config, data_dir, batch_size=32, num_workers=4):
     try:
+
+        
         train_dir = os.path.join(data_dir, 'train')
         test_dir = os.path.join(data_dir, 'test')
+        #val_dir = os.path.join(data_dir, 'val')
         
         train_dataset = FruitDataset(train_dir, transform=get_transforms(config, train=True))
         test_dataset = FruitDataset(test_dir, transform=get_transforms(config, train=False))
+        #val_dataset = FruitDataset(val_dir, transform=get_transforms(config, train=False))
         
         logger.info(f"Loaded {len(train_dataset)} training images and {len(test_dataset)} test images")
         

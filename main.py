@@ -8,6 +8,7 @@ from src.train import train_model, get_optimizer
 from src.evaluate import evaluate_model, plot_confusion_matrix, plot_learning_curves
 from src.utils import set_seed, get_device
 import argparse
+import os
 
 def main():
     parser = argparse.ArgumentParser(description='Run fruit classification model')
@@ -34,6 +35,10 @@ def main():
 
     # Create model
     model = get_model(config['model']['name'], config['model']['num_classes']).to(device)
+    
+    # Check if a checkpoint exists and load it
+    if os.path.exists(config['paths']['best_model']):
+        model.load_state_dict(torch.load(config['paths']['best_model']))
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
@@ -53,7 +58,7 @@ def main():
     test_metrics, y_true, y_pred = evaluate_model(model, test_loader, criterion, device)
 
     print(f"Test Loss: {test_metrics['loss']:.4f}")
-    print(f"Test Accuracy: {test_metrics['accuracy']:.4f}")
+    print(f"Test Precision: {test_metrics['precision']:.4f}")
     print(f"Test F1 Score: {test_metrics['f1']:.4f}")
 
     # Plot confusion matrix

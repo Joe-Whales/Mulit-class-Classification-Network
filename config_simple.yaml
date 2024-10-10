@@ -1,14 +1,14 @@
 data:
   root_dir: 'data'
   batch_size: 32
-  num_workers: 4
+  num_workers: 6
 
 model:
-  name: 'simple_cnn'
-  num_classes: 10
+  name: 'neural_net'
+  num_classes: 9
 
 training:
-  num_epochs: 50
+  num_epochs: 5
   learning_rate: 0.001
   optimizer: 'adam'
   evaluate_every: 5
@@ -16,8 +16,8 @@ training:
 seed: 42
 
 paths:
-  best_model: 'results/simple_cnn_best_model.pth'
-  confusion_matrix: 'results/simple_cnn_confusion_matrix.png'
-  learning_curves: 'results/simple_cnn_learning_curves.png'
-  log_dir: 'logs/simple_cnn'
-  metrics: 'results/simple_cnn_metrics.json'
+  best_model: 'results/neural_net_best_model.pth'
+  confusion_matrix: 'results/neural_net_confusion_matrix.png'
+  learning_curves: 'results/neural_net_learning_curves.png'
+  log_dir: 'logs/neural_net'
+  metrics: 'results/neural_net_metrics.json'
