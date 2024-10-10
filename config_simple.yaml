@@ -8,10 +8,10 @@ model:
   num_classes: 9
 
 training:
-  num_epochs: 5
+  num_epochs: 200
   learning_rate: 0.001
   optimizer: 'adam'
-  evaluate_every: 5
+  evaluate_every: 1
 
 seed: 42
 

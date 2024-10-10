@@ -34,7 +34,7 @@ def main():
     )
 
     # Create model
-    model = get_model(config['model']['name'], config['model']['num_classes']).to(device)
+    model = get_model(config['model']['name'], config['model']['num_classes'], config).to(device)
     
     # Check if a checkpoint exists and load it
     if os.path.exists(config['paths']['best_model']):

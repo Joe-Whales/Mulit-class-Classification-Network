@@ -24,6 +24,38 @@ class SimpleCNN(nn.Module):
         x = self.features(x)
         x = self.classifier(x)
         return x
+
+# CNN with dropout and batchnormalisation
+class CNN(nn.Module):
+    def __init__(self, num_classes, dropout=0.25):
+        super(CNN, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(dropout),
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(dropout),
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout(dropout)
+        )
+        self.classifier = nn.Sequential(
+            nn.AdaptiveAvgPool2d((1, 1)),
+            nn.Flatten(),
+            nn.Linear(256, num_classes)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = self.classifier(x)
+        return x
     
 class NeuralNetwork(nn.Module):
     def __init__(self, num_classes):
@@ -42,10 +74,13 @@ class NeuralNetwork(nn.Module):
         return self.model(x)
 
 # Update the get_model function
-def get_model(model_name, num_classes, **kwargs):
+def get_model(model_name, num_classes, config, **kwargs):
     if model_name == 'simple_cnn':
         return SimpleCNN(num_classes)
     elif model_name == 'neural_net':
         return NeuralNetwork(num_classes, **kwargs)
+    elif model_name == 'cnn':
+        dropout = config['model'].get('dropout', 0.25)
+        return CNN(num_classes, dropout, **kwargs)
     else:
         raise ValueError(f"Unknown model name: {model_name}")
