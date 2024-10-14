@@ -44,15 +44,15 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = get_optimizer(model, config['training']['optimizer'], config['training']['learning_rate'])
 
-    # Train the model
-    best_model = train_model(model, train_loader, val_loader, criterion, optimizer, 
-                             config['training']['num_epochs'], device, config, config['training']['evaluate_every'])
+    # # Train the model
+    # best_model = train_model(model, train_loader, val_loader, criterion, optimizer, 
+    #                          config['training']['num_epochs'], device, config, config['training']['evaluate_every'])
 
-    # Save the best model
-    torch.save(best_model, config['paths']['best_model'])
+    # # Save the best model
+    # torch.save(best_model, config['paths']['best_model'])
 
     # Load the best model for evaluation
-    model.load_state_dict(best_model)
+    # model.load_state_dict(best_model)
 
     # Evaluate the model
     test_metrics, y_true, y_pred = evaluate_model(model, test_loader, criterion, device)

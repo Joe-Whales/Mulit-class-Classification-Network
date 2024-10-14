@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
 from .utils import calculate_metrics, log_metrics
-from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+from torch.optim.lr_scheduler import CosineAnnealingLR
 
 def train_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -61,8 +61,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
     
     if config['training'].get('scheduler'):
         scheduler_config = config['training']['scheduler']
-        if scheduler_config['name'] == 'cosine_annealing_warm_restarts':
-            scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=scheduler_config['T_0'], T_mult=scheduler_config['T_mult'])
+        if scheduler_config['name'] == 'cosine_annealing':
+            scheduler = CosineAnnealingLR(optimizer, T_max=scheduler_config['t_max'] ,eta_min=scheduler_config['min_eta'])
     else:
         scheduler = None    
     
