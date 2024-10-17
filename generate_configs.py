@@ -7,7 +7,7 @@ def generate_configs():
     base_config = {
         'data': {
             'root_dir': 'data',
-            'num_workers': 4
+            'num_workers': 6
         },
         'model': {
             'name': 'cnn',
@@ -15,13 +15,13 @@ def generate_configs():
             'dropout_rate': 0.3
         },
         'training': {
-            'num_epochs': 200,
+            'num_epochs': 30,
             'optimizer': 'adam',
-            'evaluate_every': 20,
+            'evaluate_every': 1,
             'scheduler': {
                 'name': 'cosine_annealing',
                 'min_eta': 0.0005,
-                't_max': 200
+                't_max': 20
             }
         },
         'data_augmentation': {
@@ -46,10 +46,10 @@ def generate_configs():
     }
 
     # Parameters to vary
-    learning_rates = [0.001, 0.003]
-    batch_sizes = [16, 32, 64]
+    learning_rates = [0.01, 0.003]
+    batch_sizes = [32, 64]
     weight_decays = [0.0001, 0.001]
-    dropout_rates = [0.3]
+    dropout_rates = [0.5, 0.3]
 
     # Generate all combinations
     combinations = list(itertools.product(learning_rates, batch_sizes, weight_decays, dropout_rates))

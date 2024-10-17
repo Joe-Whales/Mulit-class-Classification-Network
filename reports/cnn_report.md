@@ -13,15 +13,15 @@
 
 | Metric | Initial | Final | Best |
 |--------|---------|-------|------|
-| Loss   | 1.9754 | 0.3478 | 0.3339 |
-| Accuracy | 0.2724 | 0.8908 | 0.8937 |
+| Loss   | 1.9705 | 0.3130 | 0.2933 |
+| Accuracy | 0.2715 | 0.8953 | 0.9121 |
 
 ### Validation Metrics
 
 | Metric | Initial | Final | Best |
 |--------|---------|-------|------|
-| Loss   | 1.7896 | 0.8688 | 0.8384 |
-| Accuracy | 0.3134 | 0.7482 | 0.7626 |
+| Loss   | 1.7487 | 0.7276 | 0.6759 |
+| Accuracy | 0.3722 | 0.8061 | 0.8215 |
 
 ## Training Details
 
@@ -32,3 +32,6 @@
 
 ![Confusion Matrix](docs/cnn_confusion_matrix.png)
 
+Test Loss: 0.7811
+Test Precision: 0.7977
+Test F1 Score: 0.7800
