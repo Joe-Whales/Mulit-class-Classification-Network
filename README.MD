@@ -68,8 +68,9 @@ fruit-classification/
 │   └── utils.py           # Utility functions
 │
 ├── configs/               # Configuration files
-│   ├── config_simple.yaml # Simple NN configuration
-│   └── config_advanced.yaml # CNN configuration
+│
+├── config_simple.yaml # Simple NN configuration
+├── config_advanced.yaml # CNN configuration
 │
 ├── main.py                # Main script to run training and evaluation
 ├── generate_configs.py    # Script to generate multiple configurations
@@ -87,11 +88,17 @@ fruit-classification/
 
 ## Usage
 
-To train and evaluate a model:
+To evaluate a model:
 
 ```
-python main.py --config configs/config_advanced.yaml
+python main.py --config config_advanced.yaml
 ```
+
+To train the model, edit the config file to have eval_mode = False or delete the line. Then run:
+  
+  ```
+  python main.py --config config_advanced.yaml
+  ```
 
 To run multiple configurations:
 
@@ -104,6 +111,8 @@ To generate a report:
 ```
 python generate_report.py
 ```
+
+
 
 ## Models
 
@@ -128,7 +137,7 @@ We use the following metrics for evaluation:
 - F1-score
 - Confusion Matrix
 
-Evaluation scripts can be found in `src/evaluate.py`.
+Evaluation methods can be found in `src/evaluate.py`.
 
 ## Results
 

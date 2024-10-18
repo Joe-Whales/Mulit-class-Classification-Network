@@ -33,6 +33,8 @@ def main():
         config['data']['num_workers']
     )
 
+    eval_mode = config.get('eval', False)
+    
     # Create model
     model = get_model(config['model']['name'], config['model']['num_classes'], config).to(device)
     
@@ -42,20 +44,28 @@ def main():
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = get_optimizer(model, config['training']['optimizer'], config['training']['learning_rate'])
+    if not eval_mode:
+        optimizer = get_optimizer(model, config['training']['optimizer'], config['training']['learning_rate'])
 
-    # Train the model
-    best_model = train_model(model, train_loader, val_loader, criterion, optimizer, 
-                             config['training']['num_epochs'], device, config, config['training']['evaluate_every'])
+        # Train the model
+        best_model = train_model(model, train_loader, val_loader, criterion, optimizer, 
+                                config['training']['num_epochs'], device, config, config['training']['evaluate_every'])
 
-    # Save the best model
-    torch.save(best_model, config['paths']['best_model'])
+        # Save the best model
+        torch.save(best_model, config['paths']['best_model'])
 
-    # Load the best model for evaluation
-    model.load_state_dict(best_model)
+        # Load the best model for evaluation
+        model.load_state_dict(best_model)
 
     # Evaluate the model
     test_metrics, y_true, y_pred = evaluate_model(model, test_loader, criterion, device)
+    
+    # Save the predictions and true labels
+    save_out_dir = "model_output"
+    if not os.path.exists(save_out_dir):
+        os.makedirs(save_out_dir)
+    torch.save(y_true, os.path.join(save_out_dir, "y_true.pt"))
+    torch.save(y_pred, os.path.join(save_out_dir, "y_pred.pt"))
 
     print(f"Test Loss: {test_metrics['loss']:.4f}")
     print(f"Test Precision: {test_metrics['precision']:.4f}")

@@ -37,3 +37,5 @@ paths:
   learning_curves: 'results/cnn_learning_curves.png'
   log_dir: 'logs/cnn'
   metrics: 'results/cnn_metrics.json'
+
+eval: True
